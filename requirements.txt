@@ -1,0 +1,9 @@
+Flask
+scikit-learn
+pandas
+numpy
+joblib
+gunicorn
+tldextract
+python-whois
+opencv-python

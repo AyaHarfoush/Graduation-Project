@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Smart-Detection System</title>
+    <style>
+        :root {
+           
+            --bg-black: #0a0a0a;         
+            --deep-green: #064e3b;      
+            --glow-green: #10b981;      
+            --card-bg: rgba(15, 25, 20, 0.9);
+            --text-gray: #d1d5db;        
+            --text-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at center, #0a2f26 0%, #0a0a0a 100%);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+      
+        .cyber-logo-new {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 90px;
+            height: 90px;
+            z-index: 20;
+        }
+
+        .cyber-logo-new svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 12px var(--glow-green));
+        }
+
+        #shield-hex {
+            fill: none;
+            stroke: var(--glow-green);
+            stroke-width: 2.5;
+            animation: rotateHex 12s infinite linear;
+            transform-origin: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 150px 20px 80px;
+            text-align: center;
+        }
+
+     
+        .hero h1 {
+            font-size: 3.8rem;
+            color: var(--text-white);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+        }
+
+       
+        .hero h1 span.highlight {
+            color: var(--glow-green);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto 45px;
+            line-height: 1.7;
+        }
+
+      
+        .btn-start {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--deep-green), #166534);
+            color: var(--text-white);
+            padding: 18px 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--glow-green);
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+            background: linear-gradient(45deg, #166534, var(--deep-green));
+        }
+
+        /* Feature Cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 90px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 10px;
+            border-bottom: 3px solid var(--glow-green);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .card:hover {
+            background: rgba(20, 35, 30, 0.95);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+       
+        .card .icon {
+            font-size: 2rem;
+            color: var(--glow-green);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card h3 {
+            color: var(--text-white);
+            margin-top: 0;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        @keyframes rotateHex {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="cyber-logo-new">
+        <svg viewBox="0 0 100 100">
+            <path id="shield-hex" d="M50 5 L90 25 L90 75 L50 95 L10 75 L10 25 Z" />
+            <path d="M30 50 Q50 25 70 50 Q50 75 30 50" fill="none" stroke="white" stroke-width="2"/>
+            <circle cx="50" cy="50" r="8" fill="#10b981" /> </svg>
+    </div>
+
+    <div class="container">
+        <header class="hero">
+            <h1>INTEGRATED <span class="highlight">SMART-DETECTION</span></h1>
+            <p>
+                An advanced AI-driven <strong>System</strong> developed to analyze 
+                <strong>URLs</strong> and <strong>QR Codes</strong>, providing 
+                 protection against phishing and cyber threats.
+            </p>
+            
+            <a href="/index" class="btn-start">Start Security Scan</a>
+        </header>
+
+        <section class="features">
+            <div class="card">
+                <span class="icon">🔍</span>
+                <h3>Threat Analysis</h3>
+                <p>Deep inspection of link features and metadata to identify malicious intent before you click.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🛡️</span>
+                <h3>QR-Code Safety</h3>
+                <p>Advanced decoding and scanning technology to ensure embedded QR links are safe and verified.</p>
+            </div>
+            
+        </section>
+    </div>
+
+</body>
+</html>

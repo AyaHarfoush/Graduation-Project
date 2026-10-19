@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Integrated Smart-Detection System</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        
+        :root { 
+            --glow: #10b981; 
+            --bg: #0a0a0a; 
+            --card: #111827; 
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg); 
+            color: white; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 30px; 
+        }
+
+       
+        .main-grid { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr; 
+            gap: 20px; 
+            margin-top: 20px; 
+            align-items: start;
+        }
+
+        .card { 
+            background: var(--card); 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(16, 185, 129, 0.2); 
+            text-align: center;
+        }
+
+      
+        .gauge-container { 
+            position: relative; 
+            width: 140px; 
+            height: 140px; 
+            margin: 15px auto; 
+            border-radius: 50%; 
+            background: conic-gradient(var(--glow) {{ confidence }}%, #1f2937 0); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .gauge-inner { 
+            background: var(--card); 
+            width: 80%; 
+            height: 80%; 
+            border-radius: 50%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+       
+        .url-input { 
+            width: 90%; 
+            padding: 12px; 
+            border-radius: 6px; 
+            border: 1px solid var(--glow); 
+            background: #000; 
+            color: #fff; 
+            margin-bottom: 15px; 
+            text-align: center; 
+        }
+
+        .scan-btn { 
+            background: var(--glow); 
+            color: #000; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 95%; 
+            transition: 0.2s; 
+        }
+
+        .scan-btn:hover { 
+            background: #059669; 
+        }
+
+     
+        .alert-section { 
+            background: rgba(239, 68, 68, 0.1); 
+            border-left: 4px solid #ef4444; 
+            padding: 10px; 
+            text-align: left; 
+            margin-bottom: 15px; 
+            border-radius: 4px; 
+        }
+
+        
+        .history-box { 
+            max-height: 350px; 
+            overflow-y: auto; 
+        }
+
+        .history-card { 
+            background: rgba(0,0,0,0.2); 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border-radius: 6px; 
+            text-align: left; 
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1); 
+        }
+
+        .history-link { 
+            color: var(--glow); 
+            font-size: 0.7rem; 
+            display: block; 
+            text-overflow: ellipsis; 
+            overflow: hidden; 
+            white-space: nowrap; 
+        }
+
+        .back-nav { 
+            margin-bottom: 20px; 
+        }
+
+        .back-nav a { 
+            color: var(--glow); 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="back-nav">
+        <a href="/">← BACK TO SCANNER</a>
+    </div>
+
+    <h1 style="text-align: center;">CYBER- <span style="color: var(--glow);">DETECTOR</span></h1>
+
+    <div class="main-grid">
+        
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <div class="card">
+                <h2 style="color: {{ res_color }};">{{ prediction_text }}</h2>
+
+                {% if reasons %}
+                <div class="alert-section">
+                    {% for r in reasons %}
+                        <div style="color: #fca5a5; font-size: 0.8rem; margin-bottom: 4px;">• {{ r }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form action="/predict" method="POST">
+                    <input type="text" name="url" id="urlInput" value="{{ url_sent if url_sent else '' }}" class="url-input" placeholder="Scanning result..." required>
+                    <button type="submit" class="scan-btn">RE-SCAN LINK</button>
+                </form>
+
+                <div id="reader" style="margin-top: 20px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(16,185,129,0.1);"></div>
+            </div>
+
+            
+        </div>
+
+        <div class="card">
+            <h3>Recent Scans</h3>
+            <div id="historyBox" class="history-box"></div>
+            <button onclick="clearMyHistory()" style="background:none; border:none; color:#6b7280; cursor:pointer; font-size:10px; margin-top:15px;">Clear History</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // QR Scanner Setup
+    function onScanSuccess(decodedText) { 
+        document.getElementById('urlInput').value = decodedText; 
+        document.querySelector('form').submit(); 
+    }
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+
+    // History Logic
+    function saveScan(url, result, color) {
+        let scans = JSON.parse(localStorage.getItem('my_recent_scans')) || [];
+        if (scans.length === 0 || scans[0].url !== url) {
+            scans.unshift({ url: url, result: result, color: color });
+            if (scans.length > 5) scans.pop();
+            localStorage.setItem('my_recent_scans', JSON.stringify(scans));
+        }
+        displayScans();
+    }
+
+    function displayScans() {
+        let scans = JSON.parse(localStorage.getItem('my_recent_scans')) || [];
+        let html = "";
+        for (let i = 0; i < scans.length; i++) {
+            html += `
+                <div class="history-card">
+                    <span class="history-link">${scans[i].url}</span>
+                    <span style="color: ${scans[i].color}; font-size: 0.75rem; font-weight: bold;">${scans[i].result}</span>
+                </div>`;
+        }
+        document.getElementById('historyBox').innerHTML = html || '<p style="color:#6b7280; font-size:11px;">No history available</p>';
+    }
+
+    function clearMyHistory() {
+        localStorage.removeItem('my_recent_scans');
+        displayScans();
+    }
+
+    window.onload = function() {
+        {% if url_sent %}
+            saveScan("{{ url_sent }}", "{{ prediction_text }}", "{{ res_color }}");
+        {% else %}
+            displayScans();
+        {% endif %}
+    };
+</script>
+
+</body>
+</html>
